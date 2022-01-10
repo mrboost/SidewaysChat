@@ -1,0 +1,65 @@
+@import url('https://fonts.googleapis.com/css?family={{fontFamily}}:100,300,400,500,700,900&display=swap');
+
+:root {
+  --backgroundColor: {{Background}};
+  --textColor: {{textColor}};
+  --fontSize: {{fontSize}}px;
+}
+
+* {
+  font-family: '{{fontFamily}}', sans-serif;
+}
+
+.chatBox {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 9999px;
+  height: calc(var(--fontSize) + 8px);
+  overflow: hidden;
+  background: var(--backgroundColor);
+}
+
+.chatMessage {
+  display: inline-block;
+  bottom: 0;
+  right: 0;
+  float: right;
+  white-space: nowrap;
+  color: var(--textColor);
+  font-size: var(--fontSize);
+  line-height: var(--fontSize);
+  font-weight: {{fontWeight}};
+  padding: 4px 4px;
+}
+
+.chatText {
+  position: relative;
+}
+
+.seperator {
+  position: relative;
+    left: -8px;
+}
+
+.username {
+  font-weight: bold;
+}
+
+.avatar {
+  width: calc(var(--fontSize) - 2px);
+  border-radius: 3px;
+  transform: translateY(3px);
+  position: relative;
+  left: 3px;
+  top: -1px;
+}
+
+.no-avatar {
+  display: none;
+}
+
+.emote {
+  height: calc(var(--fontSize) - 2px);
+}
+ 
