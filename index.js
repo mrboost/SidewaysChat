@@ -1,11 +1,4 @@
 
-await Pixel.loadScripts([
-  "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.5.0/gsap.min.js",
-  "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js",
-  "https://unpkg.com/animejs@3.2.1/lib/anime.min.js", //This is a JavaScript animation engine
-  "https://unpkg.com/howler@2.2.3/dist/howler.js", //This is a audio library meant for playing audio via JS
-]);
-
 let totalMessages = 0, messagesLimit = 20;
 let previousSender = '';
 
