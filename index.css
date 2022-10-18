@@ -36,6 +36,15 @@ font-family: 'Uni Sans Heavy CAPS';
   padding: 4px 4px;
 }
 
+.avatar {
+    display: inline-block;
+    margin-right: 0em;
+    position: relative;
+    height: 1em;
+    vertical-align: middle;
+    top: 0px;
+    border-radius: 3px;
+}
 .badge{
   display: inline-block;
   margin-right: 0em;
@@ -85,3 +94,5 @@ font-family: 'Uni Sans Heavy CAPS';
 .action{
     font-style: italic;
 }
+
+.highlight { background-color:{highlightColor}; }
