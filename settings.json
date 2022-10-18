@@ -5,6 +5,7 @@
     "value": "Test message",
     "group": "Test"
   },
+
    "noname": {
   	"type": "dropdown",
     "label": "Show nickname every msg?",
@@ -17,52 +18,12 @@
   "messagesLimit": {
     "type": "number",
     "label": "Messages limit",
-    "value": 10
+    "value": 6
   },
   "hideAfter": {
     "type": "number",
     "label": "Hide after seconds (999 to disable)",
     "value": 999
-  },
-  "animationOut": {
-    "type": "dropdown",
-    "label": "Animation Out:",
-    "value": "none",
-    "options": {
-      "none": "None",
-      "bounceOut": "bounceOut",
-      "bounceOutDown": "bounceOutDown",
-      "bounceOutLeft": "bounceOutLeft",
-      "bounceOutRight": "bounceOutRight",
-      "bounceOutUp": "bounceOutUp",
-      "fadeOut": "fadeOut",
-      "fadeOutDown": "fadeOutDown",
-      "fadeOutDownBig": "fadeOutDownBig",
-      "fadeOutLeft": "fadeOutLeft",
-      "fadeOutLeftBig": "fadeOutLeftBig",
-      "fadeOutRight": "fadeOutRight",
-      "fadeOutRightBig": "fadeOutRightBig",
-      "fadeOutUp": "fadeOutUp",
-      "fadeOutUpBig": "fadeOutUpBig",
-      "flipOutX": "flipOutX",
-      "flipOutY": "flipOutY",
-      "lightSpeedOut": "lightSpeedOut",
-      "rotateOut": "rotateOut",
-      "rotateOutDownLeft": "rotateOutDownLeft",
-      "rotateOutDownRight": "rotateOutDownRight",
-      "rotateOutUpLeft": "rotateOutUpLeft",
-      "rotateOutUpRight": "rotateOutUpRight",
-      "slideOutUp": "slideOutUp",
-      "slideOutDown": "slideOutDown",
-      "slideOutLeft": "slideOutLeft",
-      "slideOutRight": "slideOutRight",
-      "zoomOut": "zoomOut",
-      "zoomOutDown": "zoomOutDown",
-      "zoomOutLeft": "zoomOutLeft",
-      "zoomOutRight": "zoomOutRight",
-      "zoomOutUp": "zoomOutUp",
-      "rollOut": "rollOut"
-    }
   },
    "customFont": {
   	"type": "dropdown",
@@ -76,7 +37,7 @@
   "fontName": {
     "label": "Font Family",
     "type": "googleFont",
-    "value": "Cabin"
+    "value": "Roboto Condensed"
   },
   "fontSize": {
     "type": "number",
@@ -96,6 +57,11 @@
       "900": "Black (900)"
     }
   },
+  "highlightColor": {
+        "type": "colorpicker",
+        "label": "Highlight MSG Color",
+        "value": "#A400FF"
+    },
   "fontColor": {
     "type": "colorpicker",
     "label": "Font Color",
@@ -109,7 +75,7 @@
   "bgColor": {
         "label": "Background Color",
         "type": "colorpicker",
-        "value": "rgba(0, 0, 0, 0.2)"
+        "value": "rgb(0, 0, 0)"
     },
   "nickColor": {
     "type": "dropdown",
@@ -121,30 +87,10 @@
       "custom": "specified below"
     }
   },
-  "broadcasterColor": {
-    "type": "colorpicker",
-    "label": "Broadcaster color:",
-    "value": "rgba(255,0,0,1)"    
-  },
-  "modColor": {
-    "type": "colorpicker",
-    "label": "Moderator color:",
-    "value": "rgba(0,255,0,1)"    
-  },
-  "vipColor": {
-    "type": "colorpicker",
-    "label": "VIP color:",
-    "value": "rgba(255,53,184,1)"    
-  },  
-  "subColor": {
-    "type": "colorpicker",
-    "label": "Subscriber color:",
-    "value": "rgba(0,0,255,1)"    
-  },  
   "customNickColor": {
     "type": "colorpicker",
-    "label": "Other users color:",
-    "value": "rgba(255,255,0,1)"
+    "label": "Custom nickname color:",
+    "value": "rgba(0,255,0,1)"
   },
   "hideCommands": {
     "label": "Hide lines starting with ! (!command)",
@@ -154,11 +100,6 @@
       "yes": "Yes",
       "no": "No"
     }
-  },  
-  "hideOtherCommands":{
-    "label": "Hide messages started with",
-    "type": "text",
-    "value": "=,-,*"
   },
   "ignoredUsers": {
     "label": "Ignored users (comma separated)",
