@@ -1,5 +1,4 @@
-let totalMessages = 0, messagesLimit = 0, noname = "show", nickColor = "user", removeSelector, addition, customNickColor, channelName,
-    provider;
+let totalMessages = 0, messagesLimit = 0, noname = "show", nickColor = "user", removeSelector, addition, customNickColor, channelName, provider, highlight;
 let animationIn = 'bounceIn';
 let animationOut = 'bounceOut';
 let hideAfter = 60;
@@ -8,54 +7,7 @@ let ignoredUsers = [];
 let previousSender='';
 let emotes = [];
 
- async function getEmotes() {
-    function returnResponse(response) {
-        return response.json();
-    }
-    function logError(error) {
-        log(error.message);
-    }
-   
- res = await fetch(`https://api.7tv.app/v2/users/${channelName}/emotes`, {
-            method: "GET",
-        }).then(returnResponse, logError);
-        if (!res.error || res.status == 200) {
-            if (res.Status === 404) {
-                console.log("Error getting 7tv emotes");
-            } else {
-                for (var i = 0; i < res.length; i++) {
-                    let tvemote = {
-                        name: res[i].name,
-                        urls: res[i].urls[1],
-                    };
-                    emotes.push(tvemote);
-                }
-            }
-        } else {
-            console.log("Error getting 7tv emotes");
-        }
-        // get all 7TV global emotes
-        res = await fetch(`https://api.7tv.app/v2/emotes/global`, {
-            method: "GET",
-        }).then(returnResponse, logError);
-        if (!res.error || res.status == 200) {
-            if (res.Status === 404) {
-                console.log("Error getting 7tv global emotes");
-            } else {
-                for (var i = 0; i < res.length; i++) {
-                    let tvemote = {
-                        name: res[i].name,
-                        urls: res[i].urls[1],
-                    };
-                    emotes.push(tvemote);
-                }
-            }
-        } else {
-            console.log("Error getting 7tv global emotes");
-        }
-} 
-
-window.addEventListener('onEventReceived', function (obj) {
+window.addEventListener('onEventReceived', async function (obj) {
     if (obj.detail.event.listener === 'widget-button') {
 
         if (obj.detail.event.field === 'testMessage') {
@@ -134,17 +86,7 @@ window.addEventListener('onEventReceived', function (obj) {
 
     if (obj.detail.listener !== "message") return;
     let data = obj.detail.event.data;
-    let channel = data.channel;  
-    // User profiles: {mod: 1, sub: 1, vip: false, broadcaster: false}
-  	let userState = { 
-    	'mod': parseInt(data.tags.mod),
-    	'sub': parseInt(data.tags.subscriber),
-    	'vip': (data.tags.badges.indexOf("vip") !== -1),
-    	'broadcaster': data.nick === channel 
-  	}  	  
-    console.log('userState', userState)
     if (data.text.startsWith("!") && hideCommands === "yes") return;
-    if (hideOtherCommands.indexOf(data.text.charAt(0)) !== -1) return // ignore commands started with those characters
     if (ignoredUsers.indexOf(data.nick) !== -1) return;
     let message = attachEmotes(data);
     let badges = "", badge;
@@ -158,25 +100,15 @@ window.addEventListener('onEventReceived', function (obj) {
     let username = data.displayName + ":";
   	let nickname = data.displayName;
     if (nickColor === "user") {
-        const color = data.displayColor !== "" ? data.displayColor : "#5B99FF";
+        const color = data.displayColor !== "" ? data.displayColor : "#" + (md5(username).substr(26));
         username = `<span style="color:${color}">${username}</span>`;
     }
-    if (nickColor === "custom") {  
-      // Checking user profiles
-        if(userState.broadcaster){
-          var color = broadcasterColor;
-	    }else if(userState.mod){ 
-    	  var color = modColor;
-    	}else if(userState.vip){
-    	  var color = vipColor;
-    	}else if(userState.sub){
-    	  var color = subColor;
-    	}else{
-    	  var color = customNickColor;
-    	}
-      console.log(color)
+    if (nickColor === "custom") {
+        const color = customNickColor;
         username = `<span style="color:${color}">${username}</span>`;
     }
+  
+    highlight = (obj.detail.event.data.tags["msg-id"] === "highlighted-message")
     addMessage(nickname, username, badges, message, data.isAction, data.userId, data.msgId);
 });
 
@@ -187,10 +119,6 @@ window.addEventListener('onWidgetLoad', function (obj) {
     hideAfter = fieldData.hideAfter;
     messagesLimit = fieldData.messagesLimit;
     nickColor = fieldData.nickColor;
-    broadcasterColor = fieldData.broadcasterColor;
-    modColor = fieldData.modColor;
-    vipColor = fieldData.vipColor;
-    subColor = fieldData.subColor;
     customNickColor = fieldData.customNickColor;
     hideCommands = fieldData.hideCommands;
     channelName = obj.detail.channel.username;
@@ -200,13 +128,11 @@ window.addEventListener('onWidgetLoad', function (obj) {
         provider = profile.provider;
     });
     ignoredUsers = fieldData.ignoredUsers.toLowerCase().replace(" ", "").split(",");
-    hideOtherCommands = fieldData.hideOtherCommands.toLowerCase().replace(" ", "").split(",");
-    getEmotes();
 });
 
 function attachEmotes(message) {
     let text = html_encode(message.text);
-    let data = [...message.emotes, ...emotes];
+    let data = message.emotes;
     return text
         .replace(
             /([^\s]*)/gi,
@@ -222,12 +148,20 @@ function attachEmotes(message) {
             }
         );
 }
+
 function html_encode(e) {
     return e.replace(/[<>"^]/g, function (e) {
         return "&#" + e.charCodeAt(0) + ";";
     });
 }
-function addMessage(nickname, username, badges, message, isAction, uid, msgId) {
+function addMessage(nickname, username, badges, message, isAction, uid, msgId, avatar) {
+
+if ({showAvatar}) {
+  showBadges = avatar
+} else {
+  showBadges = badges
+}
+  
 if (noname === "show") {
   if (previousSender!==username) {
   previousSender=username;
@@ -248,9 +182,13 @@ else{
         <div class="user-message ${actionClass}">${message}</div>
     </div>`);
    
-if (hideAfter !== 999 && noname == "hide") { 
+if (hideAfter !== 999) { 
 	$('.main-container').prepend(element);
- 	gsap.fromTo(`#msg-${totalMessages}`,0.5, {delay: 0.2, right: "-50px", width: 0}, {width: "auto"});
+	if (highlight) {
+    let highlightmsg = document.querySelector(`#msg-${totalMessages}`);
+    highlightmsg.classList.add("highlight");
+  }
+ 	gsap.fromTo(`#msg-${totalMessages}`,0.5, {width: 0}, {ease: Power1.easeOut, width: "auto"});
   
 $('.main-container .message-row').prepend(element).delay(hideAfter * 1000).queue(function () {
 $(this).removeClass(animationIn).addClass(animationOut).delay(1000).queue(function () {
@@ -259,25 +197,19 @@ $(this).remove()
 });
   } else {
     $('.main-container').prepend(element);
-    gsap.fromTo(`#msg-${totalMessages}`,0.5, {delay: 0.2, right: "-50px", width: 0}, {width: "auto"});
+    if (highlight) {
+    let highlightmsg = document.querySelector(`#msg-${totalMessages}`);
+    highlightmsg.classList.add("highlight");
   }
-  if (totalMessages > messagesLimit) {
+    gsap.fromTo(`#msg-${totalMessages}`,0.5, {width: 0}, {ease: Power1.easeOut, width: "auto"});
+  }
+  
+document.querySelectorAll(".main-container .message-row").forEach((el, i) => {
+	if (i >= {messagesLimit}) {
+     gsap.timeline().to(el, {opacity: 0}).add(()=> {
+    el.remove()
+		})
+	}});  
+}
 
-        removeRow(totalMessages - messagesLimit);
-    }
-}
-function removeRow() {
-    if (!$(removeSelector).length) {
-        return;
-    }
-    if (animationOut !== "none" || !$(removeSelector).hasClass(animationOut)) {
-        if (hideAfter !== 999) {
-            $(removeSelector).dequeue();
-        } else {
-            $(removeSelector).addClass(animationOut).delay(1000).queue(function () {
-                $(this).remove().dequeue()
-            });
-        }
-        return;
-    }
-}
+	
